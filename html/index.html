@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMZ Clone with Scroll Animation</title>
+    <style>
+        /* --- General Body and Font Styles --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* --- Header and Navigation --- */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 30px 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 70px;
+            height: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+        
+        .hamburger {
+            width: 28px;
+            height: 12px;
+            display: inline-block;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #fff;
+            position: absolute;
+        }
+
+        .hamburger span:first-child { top: 0; }
+        .hamburger span:last-child { bottom: 0; }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-section #bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translateX(-50%) translateY(-50%);
+            object-fit: cover;
+        }
+        
+        /* --- Hero Text Animation Styles --- */
+        .animated-title {
+            font-size: 8vw;
+            font-weight: 500;
+            line-height: 1.1;
+            margin: 0;
+            padding: 0;
+        }
+        .animated-title .word {
+            display: block;
+        }
+        .animated-title .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: slideUpFadeIn 0.5s ease forwards;
+        }
+        @keyframes slideUpFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .word:nth-child(1) .letter:nth-child(1) { animation-delay: 0.1s; }
+        .word:nth-child(1) .letter:nth-child(2) { animation-delay: 0.15s; }
+        .word:nth-child(1) .letter:nth-child(3) { animation-delay: 0.2s; }
+        .word:nth-child(1) .letter:nth-child(4) { animation-delay: 0.25s; }
+        .word:nth-child(1) .letter:nth-child(5) { animation-delay: 0.3s; }
+        .word:nth-child(1) .letter:nth-child(6) { animation-delay: 0.35s; }
+        .word:nth-child(1) .letter:nth-child(7) { animation-delay: 0.4s; }
+        .word:nth-child(2) .letter:nth-child(1) { animation-delay: 0.45s; }
+        .word:nth-child(2) .letter:nth-child(2) { animation-delay: 0.5s; }
+        .word:nth-child(2) .letter:nth-child(3) { animation-delay: 0.55s; }
+        .word:nth-child(2) .letter:nth-child(4) { animation-delay: 0.6s; }
+        .word:nth-child(2) .letter:nth-child(5) { animation-delay: 0.65s; }
+        .word:nth-child(2) .letter:nth-child(6) { animation-delay: 0.7s; }
+        .word:nth-child(2) .letter:nth-child(7) { animation-delay: 0.75s; }
+        .word:nth-child(2) .letter:nth-child(8) { animation-delay: 0.8s; }
+
+        /* --- Scroll Indicator --- */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .scroll-indicator::after {
+            content: '↓';
+            margin-left: 8px;
+        }
+
+        /* --- Other Section Styles (No major changes here) --- */
+        .news-section{padding:100px 0;background-color:#111}.news-section .container{max-width:1300px}.news-header{margin-bottom:50px}.news-header h2{font-size:14px;font-weight:400;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid #555;padding-bottom:15px;display:inline-block}.news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}.news-card{background-color:#000;color:#fff;min-height:500px;position:relative;overflow:hidden;padding:40px;display:flex;flex-direction:column;justify-content:space-between}.news-card img,.news-card video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:.4;transition:transform .4s ease}.news-card:hover img,.news-card:hover video{transform:scale(1.05)}.card-content{position:relative;z-index:2}.card-category{font-size:12px;text-transform:uppercase;margin-bottom:20px}.card-title{font-size:28px;font-weight:500;line-height:1.3;margin:150px 0 0}.card-footer{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;font-size:14px}.card-footer .source{text-transform:uppercase}.card-footer .arrow{font-size:24px}.news-card.dark{background-color:#000}.news-card.dark img{opacity:0}.news-card.dark .card-title{margin-top:50px}
+        .about-section{padding:120px 0;background-color:#fff;color:#000}.about-content{display:flex;justify-content:space-between;align-items:center}.about-text{flex-basis:50%}.about-text .label{font-size:14px;letter-spacing:1px;text-transform:uppercase}.about-text p{font-size:32px;line-height:1.4;font-weight:400;margin:20px 0 30px}.about-link{color:#000;text-decoration:none;display:inline-flex;align-items:center;border:1px solid #000;border-radius:30px;padding:10px 20px}.about-link span{margin-left:10px}
+        .sustainability-section{padding:100px 40px;position:relative;background-image:url(https://i.imgur.com/7123o4g.png);background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center}.sustainability-container{background-color:#fff;color:#000;display:flex;flex-wrap:wrap;align-items:center;width:100%;max-width:1100px;padding:40px}.sustainability-text{flex:1;padding-right:40px;min-width:300px}.sustainability-text h2{font-size:36px;font-weight:500;margin-top:0;margin-bottom:20px}.sustainability-text p{font-size:16px;line-height:1.6;margin-bottom:30px}.know-more-link{color:#000;text-decoration:none;display:inline-flex;align-items:center;font-weight:500}.know-more-link .arrow-circle{width:40px;height:40px;border:1px solid #ddd;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:15px;font-size:20px;transition:border-color .3s}.know-more-link:hover .arrow-circle{border-color:#000}.sustainability-video{flex:1;min-width:300px}.sustainability-video video{width:100%;height:auto;display:block}
+
+        
+        /* ============== यहाँ नया CSS जोड़ा गया है ============== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px); /* Start 40px below */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0); /* Move to original position */
+        }
+        
+        /* Staggered delay for news cards */
+        .news-card:nth-child(2) { transition-delay: 0.1s; }
+        .news-card:nth-child(3) { transition-delay: 0.2s; }
+        .news-card:nth-child(4) { transition-delay: 0.3s; }
+        
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px){
+            .animated-title, .hero-content h1 {font-size:12vw}
+            .news-grid{grid-template-columns:1fr}
+            .about-content{flex-direction:column;text-align:center}
+            .about-text p{font-size:24px}
+            .sustainability-container{flex-direction: column;}
+            .sustainability-text {padding-right: 0; padding-bottom: 30px;}
+        }
+        @media (max-width: 768px){
+            .container{padding:0 20px}
+            .news-card{min-height:400px}
+            .card-title{font-size:22px}
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <!-- Header HTML (No Change) -->
+        <div class="container"><nav class="navbar"><a href="#" class="logo"><img src="https://www.rmzcorp.com/wp-content/uploads/2023/08/RMZ-Logo-1.svg" alt="RMZ Logo"></a><div class="menu-toggle">Menu<div class="hamburger"><span></span><span></span></div></div></nav></div>
+    </header>
+
+    <section class="hero-section">
+        <!-- Hero Section HTML (No Change) -->
+        <video autoplay muted loop playsinline id="bg-video"><source src="video_2_b6a4918cbc.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+        <div class="hero-content"><h1 class="animated-title"><span class="word"><span class="letter">S</span><span class="letter">h</span><span class="letter">a</span><span class="letter">p</span><span class="letter">i</span><span class="letter">n</span><span class="letter">g</span></span><span class="word"><span class="letter">t</span><span class="letter">o</span><span class="letter">m</span><span class="letter">o</span><span class="letter">r</span><span class="letter">r</span><span class="letter">o</span><span class="letter">w</span></span></h1></div>
+        <a href="#news" class="scroll-indicator">Find out how</a>
+    </section>
+
+    <section id="news" class="news-section">
+        <div class="container">
+            <!-- 'animate-on-scroll' class added here -->
+            <div class="news-header animate-on-scroll"><h2>What's New</h2></div>
+            <div class="news-grid">
+                <!-- 'animate-on-scroll' class added to each card -->
+                <div class="news-card dark animate-on-scroll"><div class="card-content"><div class="card-category">RMZ Office • July 2025</div><p class="card-title">RMZ Ecoworld 30 received WiredScore Platinum Certification, Redefining Digital Excellence in Indian Commercial Real Estate</p></div><div class="card-footer"><span class="source">The Week</span><span class="arrow">→</span></div></div>
+                <div class="news-card animate-on-scroll"><img src="https://i.imgur.com/eBf2g4G.png" alt="Rugby player"><div class="card-content"><div class="card-category">Private Capital • June 2025</div><p class="card-title">RMZ joins the Rugby Revolution in India, ahead of Rugby Premier League, with the Delhi RedZ</p></div><div class="card-footer"><span class="source">Mint</span><span class="arrow">→</span></div></div>
+                <div class="news-card animate-on-scroll"><img src="https://i.imgur.com/Y1U7K5t.png" alt="Data Centre Building"><div class="card-content"><div class="card-category">RMZ Infrastructure • Nov 2024</div><p class="card-title">RMZ, through RDIP, and Colt DCS announce $1.7B data centre JV</p></div><div class="card-footer"><span class="source">ETPrime</span><span class="arrow">→</span></div></div>
+                <div class="news-card dark animate-on-scroll"><div class="card-content"><div class="card-category">RMZ NXT • Nov 2024</div><p class="card-title">RMZ and Prologis enter logistics sector with new I&L park in Bangalore</p></div><div class="card-footer"><span class="source">ETPrime</span><span class="arrow">→</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <!-- 'animate-on-scroll' class added here -->
+        <div class="container animate-on-scroll">
+            <div class="about-content">
+                <div class="about-text"><div class="label">About us</div><p>RMZ is one of the world's largest privately controlled real asset and consumer platforms, anchored in India & benchmarked globally.</p><a href="#" class="about-link">About the firm <span>→</span></a></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sustainability-section">
+        <!-- 'animate-on-scroll' class added here -->
+        <div class="sustainability-container animate-on-scroll">
+            <div class="sustainability-text"><h2>Sustainability</h2><p>From responsible investments to sustainable businesses and green destinations, our future-focused ESG strategies drive every decision.</p><a href="#" class="know-more-link"><span class="arrow-circle">→</span><span>Know more</span></a></div>
+            <div class="sustainability-video"><video autoplay muted loop playsinline><source src="Sustainaibility_Development_Video_98cb00eb07.mp4" type="video/mp4">Your browser does not support the video tag.</video></div>
+        </div>
+    </section>
+    
+
+    <!-- ============== यहाँ नया JavaScript जोड़ा गया है ============== -->
+    <script>
+        // Create an observer
+        const observer = new IntersectionObserver(entries => {
+            // Loop over the entries
+            entries.forEach(entry => {
+                // If the element is visible
+                if (entry.isIntersecting) {
+                    // Add the 'is-visible' class
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        });
+
+        // Get all the elements you want to animate
+        const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
+        
+        // Tell the observer to watch each element
+        elementsToAnimate.forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+
+</body>
+</html>
