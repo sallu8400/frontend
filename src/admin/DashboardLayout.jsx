@@ -14,7 +14,7 @@ export function DashboardLayout() {
     console.log(user.role ,"user Role")
     if (user) {
       if (user.role !== "admin") {
-        navigate("/"); // redirect to home if not admin
+        navigate("/admin/home"); // redirect to home if not admin
       }
       setChecking(false); // check completed
     }
