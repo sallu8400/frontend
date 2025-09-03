@@ -27,7 +27,7 @@ const handleLogin = async (values) => {
       // ✅ Navigate based on role
       if (userRole === 'admin') {
         alert("admin")
-        navigate('/admin');  // admin page
+        navigate('/home/admin');  // admin page
       } else {
                 alert("uswre")
         navigate('/'); // normal user
