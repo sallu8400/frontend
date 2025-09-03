@@ -5,6 +5,7 @@ import { Heart, ShoppingBag, Star } from 'lucide-react';
 import { AddToCart } from '../../store/slices/cartSlice';
 import {  AddWishlist, getWishlist } from '../../store/slices/wishlistSlice';
 import { useTheme } from '../../contexts/ThemeContext';
+import { fetchProductById } from './../../store/slices/productsSlice';
 
 const ProductCard = ({ product, appliedDiscount = 0 }) => {
   console.log(`ProductCard for "${product.title}" is rendering!`); // ✅ यह लाइन जोड़ें
@@ -40,6 +41,11 @@ dispatch(AddToCart(product._id))
   }
 };
 
+const HandleSeleted=(id)=>{
+
+  dispatch(fetchProductById(id))
+}
+
   const getBadgeColor = (badge) => {
     switch (badge) {
       case 'Sale':
@@ -56,7 +62,7 @@ dispatch(AddToCart(product._id))
   const discountedPrice = appliedDiscount > 0 ? product.price * (1 - appliedDiscount / 100) : product.price;
 
   return (
-    <Link to={`/product/${product._id}`}>
+    <Link to={`/product/${product._id}`} onClick={()=>HandleSeleted(product._id)}>
       <div className={`rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group transform hover:scale-105 ${
         isDarkMode ? 'bg-gray-800' : 'bg-white'
       }`}>
