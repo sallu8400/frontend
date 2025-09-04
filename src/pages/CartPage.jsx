@@ -1,339 +1,4 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { Button, InputNumber, Empty } from 'antd';
-// import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, CreditCard } from 'lucide-react';
-// import { RemoveFromCart, removeFromCart, updateQuantity } from '../store/slices/cartSlice';
-// import { useTheme } from '../contexts/ThemeContext';
-// import { products } from './../data/products';
-// import { updateCartItem } from './../store/slices/cartSlice';
-// import { useRazorpay } from "react-razorpay";
-// import axios from 'axios';
-// const BASE_URL='https://backend-2-rngp.onrender.com/api'
 
-// const CartPage = () => {
-//     const {  Razorpay } = useRazorpay();
-//   const { isDarkMode } = useTheme();
-//   const dispatch = useDispatch();
-//   const { items, total, itemCount } = useSelector((state) => state.cart);
-//     const { isLoggedIn, user } = useSelector((state) => state.auth);
-// console.log(items,"yy")
-//   const shipping = total > 100 ? 0 : 15;
-//   const tax = total * 0.08;
-//   const finalTotal = total + shipping + tax;
-
-//   const handleRemoveItem = (items) => {
-
-//     dispatch(RemoveFromCart(items._id));
-//   };
-
-// const handleUpdateQuantity = async (itemId, quantity) => {
-//   console.log(itemId, "id", quantity);
-
-//   if (quantity <= 0) {
-//     dispatch(removeFromCart(itemId));
-//   } else {
-//     await dispatch(updateCartItem({ itemId, quantity }));
-//   }
-// };
-
-//   if (items.length === 0) {
-//     return (
-//       <div className={`min-h-screen py-12 transition-colors duration-300 ${
-//         isDarkMode ? 'bg-gray-900' : 'bg-slate-50'
-//       }`}>
-//         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <Link
-//             to="/"
-//             className={`flex items-center mb-8 transition-colors ${
-//               isDarkMode 
-//                 ? 'text-gray-400 hover:text-white' 
-//                 : 'text-slate-600 hover:text-slate-900'
-//             }`}
-//           >
-//             <ArrowLeft className="w-5 h-5 mr-2" />
-//             Continue Shopping
-//           </Link>
-          
-//           <div className={`rounded-2xl shadow-lg p-8 transition-colors duration-300 ${
-//             isDarkMode ? 'bg-gray-800' : 'bg-white'
-//           }`}>
-//             <Empty
-//               image={<ShoppingBag className={`w-24 h-24 mx-auto ${
-//                 isDarkMode ? 'text-gray-600' : 'text-slate-300'
-//               }`} />}
-//               description={
-//                 <div className="text-center">
-//                   <h2 className={`text-3xl font-bold mb-4 transition-colors ${
-//                     isDarkMode ? 'text-white' : 'text-slate-900'
-//                   }`}>Your Cart is Empty</h2>
-//                   <p className={`text-xl mb-8 transition-colors ${
-//                     isDarkMode ? 'text-gray-300' : 'text-slate-600'
-//                   }`}>
-//                     Looks like you haven't added anything to your cart yet
-//                   </p>
-//                 </div>
-//               }
-//             >
-//               <Link to="/">
-//                 <Button 
-//                   type="primary" 
-//                   size="large" 
-//                   className={isDarkMode 
-//                     ? 'bg-amber-600 hover:bg-amber-700 border-amber-600' 
-//                     : 'bg-slate-800 hover:bg-slate-900 border-slate-800'
-//                   }
-//                 >
-//                   Start Shopping
-//                 </Button>
-//               </Link>
-//             </Empty>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//        const HandleByuNow = async () => {
-//             try {
-//               const { data } = await axios.post(`${BASE_URL}/payment/order`, { productId: item._id });
-            
-          
-//               console.log(data.discount,"discount")
-//               const options = {
-//                 key: "rzp_test_nMxPa43EyAHRSl",
-//                 amount: data.amount, // in paise
-//                 currency: "INR",
-//                 name: "Salman",
-//                 description: "Test Transaction",
-//                 order_id: data.id,
-//                 handler: (response) => {
-//                   console.log("Payment Success Response:", response);
-//                   alert("Payment Successful!");
-//                   // Optionally hit your backend to verify signature
-//                 },
-//                 // prefill: {
-//                 //   name: session?.fullname || "Guest",
-//                 //   email: session?.email || "guest@example.com",
-//                 // },
-//                 theme: {
-//                   color: "#F37254",
-//                 },
-
-//                 // notes: {
-//                 //   user: session && session.id,
-//                 //   ebook: item._id,
-//                 //   discount: item.discount,
-//                 //   user: session && session.id,
-//                 // },
-//               };
-          
-//               const rzp = new Razorpay(options);
-//               rzp.open();
-          
-//               rzp.on("payment.failed", (response) => {
-//                 console.error("Payment Failed:", response);
-//                 alert("Payment failed. Please try again.");
-//               });
-//             } catch (error) {
-//               const status = error.response?.status;
-//               console.error(error.response?.data || error.message);
-//           console.log(error.message, status,error.response.data,"error.message");
-//               if (status === 400 || status === 401 || status === 500) {
-//                 navigate("/login");
-//               } else {
-//                 alert("Something went wrong. Please try again later.");
-//               }
-//             }
-//    };
-          
-
-//   return (
-//     <div className={`min-h-screen py-12 transition-colors duration-300 ${
-//       isDarkMode ? 'bg-gray-900' : 'bg-slate-50'
-//     }`}>
-//       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-//         <Link
-//           to="/"
-//           className={`flex items-center mb-8 transition-colors ${
-//             isDarkMode 
-//               ? 'text-gray-400 hover:text-white' 
-//               : 'text-slate-600 hover:text-slate-900'
-//           }`}
-//         >
-//           <ArrowLeft className="w-5 h-5 mr-2" />
-//           Continue Shopping
-//         </Link>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//           {/* Cart Items */}
-//           <div className="lg:col-span-2">
-//             <div className={`rounded-2xl shadow-lg p-6 transition-colors duration-300 ${
-//               isDarkMode ? 'bg-gray-800' : 'bg-white'
-//             }`}>
-//               <h1 className={`text-3xl font-bold mb-8 transition-colors ${
-//                 isDarkMode ? 'text-white' : 'text-slate-900'
-//               }`}>Shopping Cart</h1>
-              
-//               <div className="space-y-6">
-//              {  isLoggedIn && Array.isArray(items) && items.map((item) => (
-//                   <div key={`${item.id}-${item.size}-${item.color}`} className={`flex items-center space-x-4 p-4 border rounded-xl hover:shadow-md transition-all ${
-//                     isDarkMode 
-//                       ? 'border-gray-700 hover:border-gray-600' 
-//                       : 'border-gray-100 hover:border-gray-200'
-//                   }`}>
-//                     <img
-//                       src={item.image}
-//                       alt={item.name}
-//                       className="w-20 h-20 object-cover rounded-lg"
-//                     />
-//                     {console.log(item,"itemitemitemitem")}
-//                     <div className="flex-1">
-//                       <h3 className={`text-lg font-semibold transition-colors ${
-//                         isDarkMode ? 'text-white' : 'text-slate-900'
-//                       }`}>{item.name}</h3>
-//                       <div className="flex items-center space-x-4 mt-1">
-//                         {item.size && (
-//                           <span className={`text-sm transition-colors ${
-//                             isDarkMode ? 'text-gray-400' : 'text-slate-500'
-//                           }`}>Size: {item.size}</span>
-//                         )}
-//                         {item.color && (
-//                           <span className={`text-sm transition-colors ${
-//                             isDarkMode ? 'text-gray-400' : 'text-slate-500'
-//                           }`}>Color: {item.color}</span>
-//                         )}
-//                       </div>
-//                       <div className="flex items-center space-x-2 mt-2">
-//                         <span className={`text-xl font-bold transition-colors ${
-//                           isDarkMode ? 'text-white' : 'text-slate-900'
-//                         }`}>${item.price}</span>
-//                         {item.originalPrice && (
-//                           <span className={`text-sm line-through transition-colors ${
-//                             isDarkMode ? 'text-gray-400' : 'text-slate-500'
-//                           }`}>${item.originalPrice}</span>
-//                         )}
-//                       </div>
-//                     </div>
-                    
-//                     <div className="flex items-center space-x-3">
-//                       <Button
-//                         size="small"
-//                         icon={<Minus className="w-4 h-4" />}
-//                         onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)}
-//                       />
-                      
-//                       <InputNumber
-//                         min={1}
-//                         value={item.quantity}
-//                         onChange={(value) => handleUpdateQuantity(item._id, value || 1)}
-//                         className="w-16 text-center"
-//                       />
-                      
-//                       <Button
-//                         size="small"
-//                         icon={<Plus className="w-4 h-4" />}
-//                         onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)}
-//                       />
-//                     </div>
-                    
-//                     <div className="text-right">
-//                       <p className={`text-lg font-bold transition-colors ${
-//                         isDarkMode ? 'text-white' : 'text-slate-900'
-//                       }`}>
-//                         ${(item.price * item.quantity).toFixed(2)}
-//                       </p>
-//                       <Button
-//                         type="text"
-//                         danger
-//                         icon={<Trash2 className="w-4 h-4" />}
-//                         onClick={() => handleRemoveItem(item)}
-//                         className="mt-2"
-//                       />
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Order Summary */}
-//           <div className="lg:col-span-1">
-//             <div className={`rounded-2xl shadow-lg p-6 sticky top-24 transition-colors duration-300 ${
-//               isDarkMode ? 'bg-gray-800' : 'bg-white'
-//             }`}>
-//               <h2 className={`text-2xl font-bold mb-6 transition-colors ${
-//                 isDarkMode ? 'text-white' : 'text-slate-900'
-//               }`}>Order Summary</h2>
-              
-//               <div className="space-y-4 mb-6">
-//                 <div className="flex justify-between">
-//                   <span className={isDarkMode ? 'text-gray-300' : 'text-slate-600'}>Subtotal ({itemCount} items)</span>
-//                   <span className="font-medium">${total.toFixed(2)}</span>
-//                 </div>
-                
-//                 <div className="flex justify-between">
-//                   <span className={isDarkMode ? 'text-gray-300' : 'text-slate-600'}>Shipping</span>
-//                   <span className="font-medium">
-//                     {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
-//                   </span>
-//                 </div>
-                
-//                 <div className="flex justify-between">
-//                   <span className={isDarkMode ? 'text-gray-300' : 'text-slate-600'}>Tax</span>
-//                   <span className="font-medium">${tax.toFixed(2)}</span>
-//                 </div>
-                
-//                 <hr className={isDarkMode ? 'border-gray-700' : 'border-gray-200'} />
-                
-//                 <div className="flex justify-between text-lg font-bold">
-//                   <span>Total</span>
-//                   <span>${finalTotal.toFixed(2)}</span>
-//                 </div>
-//               </div>
-              
-//               {shipping > 0 && (
-//                 <div className={`border rounded-lg p-4 mb-6 transition-colors ${
-//                   isDarkMode 
-//                     ? 'bg-amber-900/20 border-amber-700' 
-//                     : 'bg-amber-50 border-amber-200'
-//                 }`}>
-//                   <p className={`text-sm ${
-//                     isDarkMode ? 'text-amber-300' : 'text-amber-800'
-//                   }`}>
-//                     Add ${(100 - total).toFixed(2)} more for free shipping!
-//                   </p>
-//                 </div>
-//               )}
-              
-//               <Button 
-//                 type="primary" 
-//                 size="large" 
-//                 onClick={()=>HandleByuNow}
-//                 icon={<CreditCard className="w-5 h-5" />}
-//                 className={`w-full mb-4 ${
-//                   isDarkMode 
-//                     ? 'bg-amber-600 hover:bg-amber-700 border-amber-600' 
-//                     : 'bg-slate-800 hover:bg-slate-900 border-slate-800'
-//                 }`}
-//               >
-//                 Proceed to Checkout
-//               </Button>
-              
-//               <Link to="/">
-//                 <Button size="large" className="w-full">
-//                   Continue Shopping
-//                 </Button>
-//               </Link>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CartPage;
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -345,7 +10,7 @@ import { useRazorpay } from "react-razorpay";
 import axios from 'axios';
 
 // Your base URL
-const BASE_URL = 'https://backend-2-rngp.onrender.com/api';
+const BASE_URL = 'https://backend-2-rngp.onrender.com';
 
 const CartPage = () => {
   const [loading, setLoading] = useState(false);
@@ -362,6 +27,8 @@ const CartPage = () => {
   const { user, isLoggedIn } = useSelector((state) => state.auth);
   const { items, total, itemCount } = useSelector((state) => state.cart);
   const token = user?.token;
+
+  
 
   // Calculate shipping, tax, and totals
   const shipping = total > 100 ? 0 : 15;
@@ -535,30 +202,51 @@ const CartPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items List */}
           <div className="lg:col-span-2">
-            <div className={`rounded-2xl shadow-lg p-6 transition-colors duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-              <h1 className={`text-3xl font-bold mb-8 transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Shopping Cart</h1>
+            <div className={`rounded-2xl shadow-lg p-4 sm:p-6 transition-colors duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h1 className={`text-2xl sm:text-3xl font-bold mb-8 transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Shopping Cart</h1>
               <div className="space-y-6">
                 {isLoggedIn && Array.isArray(items) && items.map((item) => (
-                  <div key={`${item.product._id}-${item.size}-${item.color}`} className={`flex items-center space-x-4 p-4 border rounded-xl hover:shadow-md transition-all ${isDarkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-100 hover:border-gray-200'}`}>
-                    <img src={item.product.images[0]?.url} alt={item.product.name} className="w-20 h-20 object-cover rounded-lg" />
-                    <div className="flex-1">
-                      <h3 className={`text-lg font-semibold transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{item.product.name}</h3>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <span className={`text-xl font-bold transition-colors ${isDarkMode ? 'text-amber-400' : 'text-slate-900'}`}>₹{item.product.price}</span>
+                  // --- ✅ यहाँ से रेस्पॉन्सिव बदलाव शुरू होते हैं ---
+                  <div 
+                    key={item._id} // हर आइटम के लिए यूनिक key
+                    // flex-wrap छोटे स्क्रीन पर आइटम्स को अगली लाइन में भेज देगा
+                    className={`flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-4 gap-x-2 p-4 border rounded-xl hover:shadow-md transition-all ${isDarkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-100 hover:border-gray-200'}`}
+                  >
+                    {/* भाग 1: इमेज और प्रोडक्ट की जानकारी */}
+                    <div className="flex items-center gap-4 w-full sm:w-auto sm:flex-1">
+                      <img
+                        src={item.product.images?.[0]?.url || "/placeholder.png"}
+                        alt={item.product?.name || "No Image"}
+                        className="w-20 h-20 object-cover rounded-lg flex-shrink-0" // इमेज को सिकुड़ने से रोकता है
+                      />
+                      <div className="flex-1">
+                        <h3 className={`text-base font-semibold leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{item.product.name}</h3>
+                        <p className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>
+                          Price: ₹{item.product.price}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Button size="small" icon={<Minus className="w-4 h-4" />} onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)} />
-                      <InputNumber min={1} value={item.quantity} onChange={(value) => handleUpdateQuantity(item._id, value || 1)} className="w-16 text-center" />
-                      <Button size="small" icon={<Plus className="w-4 h-4" />} onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)} />
-                    </div>
-                    <div className="text-right">
-                      <p className={`text-lg font-bold transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+
+                    {/* भाग 2: कंट्रोलर्स और कुल कीमत */}
+                    <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-x-2 sm:gap-x-4">
+                      {/* मात्रा कंट्रोलर */}
+                      <div className="flex items-center space-x-2">
+                        <Button size="small" icon={<Minus className="w-4 h-4" />} onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)} />
+                        {/* InputNumber को सिर्फ़ दिखाने के लिए इस्तेमाल करें */}
+                        <InputNumber readOnly min={1} value={item.quantity} className="w-14 text-center" />
+                        <Button size="small" icon={<Plus className="w-4 h-4" />} onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)} />
+                      </div>
+
+                      {/* कुल कीमत */}
+                      <p className={`text-base font-bold w-24 text-center ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
                         ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
-                      <Button type="text" danger icon={<Trash2 className="w-4 h-4" />} onClick={() => handleRemoveItem(item)} className="mt-2" />
+
+                      {/* हटाने का बटन */}
+                      <Button type="text" danger icon={<Trash2 className="w-5 h-5" />} onClick={() => handleRemoveItem(item)} />
                     </div>
                   </div>
+                  // --- ✅ रेस्पॉन्सिव बदलाव यहाँ खत्म होते हैं ---
                 ))}
               </div>
             </div>
@@ -595,7 +283,6 @@ const CartPage = () => {
                   <span>₹{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
-
               <div className="mb-6">
                 <div className="flex">
                   <input
@@ -615,7 +302,6 @@ const CartPage = () => {
                   </Button>
                 </div>
               </div>
-
               {shipping > 0 && (
                 <div className={`border rounded-lg p-4 mb-6 transition-colors ${isDarkMode ? "bg-amber-900/20 border-amber-700" : "bg-amber-50 border-amber-200"}`}>
                   <p className={`text-sm ${isDarkMode ? "text-amber-300" : "text-amber-800"}`}>
@@ -627,8 +313,8 @@ const CartPage = () => {
                 type="primary"
                 size="large"
                 onClick={handleBuyNow}
-                disabled={loading}
-                loading={loading}
+                disabled={loading} // `loading` state का नाम बदलें, शायद `checkoutLoading`?
+                loading={loading} // `loading` state का नाम बदलें
                 icon={<CreditCard className="w-5 h-5 mr-2" />}
                 className={`w-full mb-4 text-white ${isDarkMode ? "bg-amber-600 hover:bg-amber-700 border-amber-600" : "bg-slate-800 hover:bg-slate-900 border-slate-800"}`}
               >
