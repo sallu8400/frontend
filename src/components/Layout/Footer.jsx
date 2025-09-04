@@ -112,23 +112,23 @@ const Footer = () => {
             </div>
             
             {/* Newsletter */}
-            <div className="mt-8">
-              <h4 className="font-semibold mb-3">Stay Updated</h4>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className={`flex-1 px-4 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors ${
-                    isDarkMode 
-                      ? 'bg-gray-800 text-white border-gray-600' 
-                      : 'bg-slate-800 text-white border-slate-700'
-                  }`}
-                />
-                <button className="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-r-lg transition-colors">
-                  <Mail className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
+<div class="mt-8">
+  <h4 class="font-semibold mb-3">Stay Updated</h4>
+  <div class="flex flex-col sm:flex-row">
+    <input
+      type="email"
+      placeholder="Enter your email"
+      class={`w-full px-4 py-2 border rounded-t-lg sm:rounded-l-lg sm:rounded-t-none focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors ${
+        isDarkMode 
+          ? 'bg-gray-800 text-white border-gray-600' 
+          : 'bg-slate-800 text-white border-slate-700'
+      }`}
+    />
+    <button class="bg-amber-500 hover:bg-amber-600 px-4 py-2 rounded-b-lg sm:rounded-r-lg sm:rounded-b-none transition-colors w-full sm:w-auto">
+      <Mail className="w-5 h-5 mx-auto" />
+    </button>
+  </div>
+</div>
           </div>
         </div>
         

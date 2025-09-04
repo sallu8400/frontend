@@ -712,7 +712,7 @@ const Header = ({ onSearchClick }) => {
                         {/* Right Side: Icons */}
                         <div className="flex items-center space-x-2 sm:space-x-4">
                             {/* <ThemeToggle /> */}
-                            {/* <button onClick={onSearchClick} className={`transition-colors p-2 rounded-full ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}><Search className="w-5 h-5" /></button> */}
+                            <button onClick={onSearchClick} className={`transition-colors p-2 rounded-full ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}><Search className="w-5 h-5" /></button>
                             <button onClick={handleWishlistClick} className={`transition-colors relative p-2 rounded-full ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}><Badge count={isLoggedIn ? wishlistCount : 0} size="small"><Heart className="w-5 h-5" /></Badge></button>
                             <button onClick={handleCartClick} className={`transition-colors relative p-2 rounded-full ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}><Badge count={isLoggedIn ? itemCount : 0} size="small"><ShoppingBag className="w-5 h-5" /></Badge></button>
                             

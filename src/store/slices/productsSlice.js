@@ -51,24 +51,22 @@ export const fetchProductsByCategory = createAsyncThunk(
 
 
 export const fetchProductsBySearch = createAsyncThunk(
-  "products/fetchProductsBySearch",
-  async (searchTerm, { rejectWithValue }) => {
+  'products/fetchProductsBySearch',
+  async (searchQuery, thunkAPI) => {
     try {
-      const token = localStorage.getItem("token"); // or get from Redux state
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const response = await axios.get(
-        `${API_BASE_URL}/products?search=${encodeURIComponent(searchTerm)}`,
-        config
-      );
-console.log(response.data,"res")
-      return response.data; // contains { success, count, data: [...] }
+      if (!searchQuery || searchQuery.trim() === '') {
+        return { data: [] };
+      }
+      const response = await axios.get(`${API_BASE_URL}/products/search?search=${searchQuery}`);
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message);
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -334,20 +332,24 @@ let filtered = Array.isArray(state.allProducts) ? [...state.allProducts] : [];
 //  search product
 
 
-.addCase(fetchProductsBySearch.pending, (state) => {
+
+// जब सर्च शुरू हो
+      .addCase(fetchProductsBySearch.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+      // जब सर्च सफलतापूर्वक पूरी हो जाए
       .addCase(fetchProductsBySearch.fulfilled, (state, action) => {
         state.loading = false;
-        state.searchResults = action.payload.data; // assuming API returns { data: [...] }
+        // API से मिले डेटा को searchResults में स्टोर करें
+        // आपका API { success: true, count:..., data: [...] } जैसा ऑब्जेक्ट लौटाता है
+        state.searchResults = action.payload.data; 
       })
+      // जब सर्च में कोई एरर आए
       .addCase(fetchProductsBySearch.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload; // rejectWithValue से भेजा गया एरर मैसेज
       })
-
-
   //  price filter
 
   //  .addCase(fetchProductsByPriceRange.pending, (state) => {
