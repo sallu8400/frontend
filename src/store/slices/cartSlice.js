@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
 
-const API_BASE_URL = 'https://backend-2-rngp.onrender.com/api';
+const API_BASE_URL = 'https://backend-2-rngp.onrender.com';
 
 export const AddToCart = createAsyncThunk(
   "cart/addToCart",

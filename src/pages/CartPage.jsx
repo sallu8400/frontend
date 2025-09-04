@@ -28,7 +28,11 @@ const CartPage = () => {
   const { items, total, itemCount } = useSelector((state) => state.cart);
   const token = user?.token;
 
-  
+     <div>
+                    {
+                    console.log(  items,"cartd")
+                    }
+                  </div>
 
   // Calculate shipping, tax, and totals
   const shipping = total > 100 ? 0 : 15;
@@ -38,10 +42,13 @@ const CartPage = () => {
 
 
   const handleRemoveItem = (item) => {
+
+    console.log(item)
     dispatch(RemoveFromCart(item._id));
   };
 
   const handleUpdateQuantity = async (itemId, quantity) => {
+    console.log(itemId,quantity,"quantity","quantity")
     if (quantity <= 0) {
       // If quantity is 0 or less, remove the item
       await dispatch(removeFromCart(itemId));
@@ -206,12 +213,16 @@ const CartPage = () => {
               <h1 className={`text-2xl sm:text-3xl font-bold mb-8 transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Shopping Cart</h1>
               <div className="space-y-6">
                 {isLoggedIn && Array.isArray(items) && items.map((item) => (
+ 
+                 
                   // --- ✅ यहाँ से रेस्पॉन्सिव बदलाव शुरू होते हैं ---
                   <div 
                     key={item._id} // हर आइटम के लिए यूनिक key
                     // flex-wrap छोटे स्क्रीन पर आइटम्स को अगली लाइन में भेज देगा
                     className={`flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-4 gap-x-2 p-4 border rounded-xl hover:shadow-md transition-all ${isDarkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-100 hover:border-gray-200'}`}
                   >
+{console.log(item,"cge")}
+               
                     {/* भाग 1: इमेज और प्रोडक्ट की जानकारी */}
                     <div className="flex items-center gap-4 w-full sm:w-auto sm:flex-1">
                       <img
