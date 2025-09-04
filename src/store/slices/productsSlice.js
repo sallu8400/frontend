@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { apiService } from "../../services/api";
 import axios from 'axios'
-const API_BASE_URL = "https://backend-2-rngp.onrender.com";
+const API_BASE_URL = "https://backend-2-rngp.onrender.com/api";
 
 
 // Thunk to fetch products
@@ -101,14 +101,14 @@ export const fetchProductById = createAsyncThunk(
   "products/fetchProductsByid",
   async (id, { rejectWithValue }) => {
     try {
-      alert("try")
+
 
     
 
       const response = await axios.get(
         `${API_BASE_URL}/products/${id}`
       );
-console.log(response.data,"res234234")
+console.log(response.data,"")
       return response.data; // contains { success, count, data: [...] }
     } catch (error) {
        
