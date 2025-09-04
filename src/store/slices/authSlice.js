@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
 // API base URL - you can move this to environment variables
-const API_BASE_URL = 'https://backend-2-rngp.onrender.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => {

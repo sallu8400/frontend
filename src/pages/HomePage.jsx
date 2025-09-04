@@ -29,8 +29,12 @@ const HomePage = () => {
   useEffect(() => {
     // ✅ currentPage बदलने पर paginated fetch एक्शन डिस्पैच करें
     dispatch(fetchPaginatedProducts({ page: currentPage, limit: productsPerPage }));
-    dispatch(getWishlist());
   }, [dispatch, currentPage]); // ✅ currentPage को dependency array में जोड़ें
+
+  // Wishlist ko sirf initial render par fetch karein
+  useEffect(() => {
+    dispatch(getWishlist());
+  }, [dispatch]);
 
   const categories = [
     {
@@ -105,9 +109,11 @@ const HomePage = () => {
 
   return (
     <div className={`transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      {/* Hero Slider Section */}
       <HeroSlider />
 
       {/* Categories Section */}
+      {/* Shop by Category Section */}
       <section className={`py-20 transition-colors duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -150,7 +156,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Featured Products Section */}
+  {/* Featured Products Section */}
+  {/* Products Grid & Pagination Section */}
       <section className={`py-20 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-slate-50'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -162,11 +169,13 @@ const HomePage = () => {
 
           {currentProducts && currentProducts.length > 0 ? (
             <>
+              {/* Products Grid Section */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {currentProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
+              {/* Pagination Section */}
               <div className="mt-6 flex justify-center">
                 <Pagination
                   current={currentPage}
@@ -176,6 +185,7 @@ const HomePage = () => {
                   className="pagination-style"
                 />
               </div>
+              {/* View All Products Button Section */}
               <div className="text-center mt-12">
                 <button
                   onClick={() => navigate('/products')} // एक समर्पित 'सभी उत्पाद' पृष्ठ पर नेविगेट करें

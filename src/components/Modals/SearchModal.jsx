@@ -1,6 +1,4 @@
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Modal, Input, Empty } from 'antd';
@@ -26,35 +24,49 @@ const SearchModal = ({ isOpen, onClose }) => {
     'Accessories'
   ];
 
-  const recentSearches = [
-    'Black Dress',
-    'Denim Jacket',
-    'Summer Collection'
-  ];
+  const debounceRef = useRef();
+  const [recentSearches, setRecentSearches] = useState(() => {
+    return JSON.parse(localStorage.getItem('recentSearches') || '[]');
+  });
+
+  // Debounced search function
+  const debouncedSearch = useCallback((query) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const result = dispatch(fetchProductsBySearch(query));
+        if (result.type === 'products/fetchProductsBySearch/fulfilled') {
+          setSearchResults(result.payload);
+        }
+        // Add to recent searches if not already present
+        if (query && query.length > 2) {
+          setRecentSearches((prev) => {
+            const updated = [query, ...prev.filter((item) => item !== query)].slice(0, 5);
+            localStorage.setItem('recentSearches', JSON.stringify(updated));
+            return updated;
+          });
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 500);
+  }, [dispatch]);
 
   useEffect(() => {
     if (searchQuery.length > 2) {
-      setIsSearching(true);
-      const timer = setTimeout(async () => {
-        try {
-          const result =  dispatch(fetchProductsBySearch(searchQuery));
-       
-          if (result.type === 'products/fetchProductsBySearch/fulfilled') {
-            setSearchResults(result.payload);
-          }
-        } catch (error) {
-          console.error('Search error:', error);
-        } finally {
-          setIsSearching(false);
-        }
-      }, 500);
-
-      return () => clearTimeout(timer);
+      debouncedSearch(searchQuery);
     } else {
       setSearchResults([]);
       setIsSearching(false);
     }
-  }, [searchQuery, dispatch]);
+    // Cleanup on unmount
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [searchQuery, debouncedSearch]);
 
   // Update local search results when Redux state changes
   useEffect(() => {
@@ -219,35 +231,18 @@ const SearchModal = ({ isOpen, onClose }) => {
               {/* Recent Searches */}
               <div>
                 <div className="flex items-center space-x-2 mb-4">
-                  <Clock className={`w-5 h-5 ${
-                    isDarkMode ? 'text-gray-400' : 'text-slate-400'
-                  }`} />
-                  <h3 className={`font-medium transition-colors ${
-                    isDarkMode ? 'text-white' : 'text-slate-800'
-                  }`}>Recent Searches</h3>
+                  <Clock className={`w-5 h-5 ${isDarkMode ? 'text-gray-400' : 'text-slate-400'}`} />
+                  <h3 className={`font-medium transition-colors ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Recent Searches</h3>
                 </div>
                 <div className="space-y-2">
                   {recentSearches.map((term, index) => (
                     <button
                       key={index}
                       onClick={() => handleTrendingClick(term)}
-                      className={`flex items-center space-x-3 w-full text-left p-2 rounded-lg transition-colors group ${
-                        isDarkMode 
-                          ? 'hover:bg-gray-700' 
-                          : 'hover:bg-gray-50'
-                      }`}
+                      className={`flex items-center space-x-3 w-full text-left p-2 rounded-lg transition-colors group ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'}`}
                     >
-                      <Clock className={`w-4 h-4 ${
-                        isDarkMode ? 'text-gray-400' : 'text-slate-400'
-                      }`} />
-                      <span className={`group-hover:text-slate-800 transition-colors ${
-                        isDarkMode ? 'text-gray-300 group-hover:text-white' : 'text-slate-600'
-                      }`}>{term}</span>
-                      <ArrowRight className={`w-4 h-4 ml-auto transition-colors ${
-                        isDarkMode 
-                          ? 'text-gray-500 group-hover:text-gray-300' 
-                          : 'text-slate-300 group-hover:text-slate-500'
-                      }`} />
+                      <Clock className={`w-4 h-4 ${isDarkMode ? 'text-gray-400' : 'text-slate-400'}`} />
+                      <span>{term}</span>
                     </button>
                   ))}
                 </div>
