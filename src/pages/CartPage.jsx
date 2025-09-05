@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, InputNumber, Empty, message } from 'antd';
 import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, CreditCard } from 'lucide-react';
-import { clearCart, RemoveFromCart, removeFromCart, updateCartItem } from '../store/slices/cartSlice';
+import { ClearCart, clearCart, RemoveFromCart, removeFromCart, updateCartItem } from '../store/slices/cartSlice';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRazorpay } from "react-razorpay";
 import axios from 'axios';
@@ -28,11 +28,7 @@ const CartPage = () => {
   const { items, total, itemCount } = useSelector((state) => state.cart);
   const token = user?.token;
 
-     <div>
-                    {
-                    console.log(  items,"cartd")
-                    }
-                  </div>
+   
 
   // Calculate shipping, tax, and totals
   const shipping = total > 100 ? 0 : 15;
@@ -91,6 +87,12 @@ const CartPage = () => {
     } finally {
       setCouponLoading(false);
     }
+  };
+
+
+    const handleClearCart = async () => {
+      await dispatch(ClearCart())
+    dispatch(clearCart());
   };
 
   const handleBuyNow = async () => {
@@ -199,7 +201,7 @@ const CartPage = () => {
   }
 
   // Main view when cart has items
-  return (
+return (
     <div className={`min-h-screen py-12 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-slate-50 text-slate-900'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/" className={`flex items-center mb-8 transition-colors ${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}>
@@ -210,25 +212,40 @@ const CartPage = () => {
           {/* Cart Items List */}
           <div className="lg:col-span-2">
             <div className={`rounded-2xl shadow-lg p-4 sm:p-6 transition-colors duration-300 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-              <h1 className={`text-2xl sm:text-3xl font-bold mb-8 transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Shopping Cart</h1>
+              
+              {/* --- ✅ बदलाव यहाँ से शुरू है --- */}
+              <div className="flex justify-between items-center mb-8">
+                <h1 className={`text-2xl sm:text-3xl font-bold transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                  Shopping Cart
+                </h1>
+                {/* "पूरा कार्ट खाली करें" बटन */}
+                {isLoggedIn && Array.isArray(items) && items.length > 0 && (
+                  <Button
+                    type="text"
+                    onClick={handleClearCart}
+                    danger
+                    icon={<Trash2 className="w-4 h-4 mr-2" />}
+                    // onClick={handleClearCart} // यहाँ आप सभी आइटम्स को हटाने वाला फंक्शन कॉल करेंगे
+                    className="flex items-center"
+                  >
+                    Clear Cart
+                  </Button>
+                )}
+              </div>
+              {/* --- ✅ बदलाव यहाँ खत्म है --- */}
+
               <div className="space-y-6">
                 {isLoggedIn && Array.isArray(items) && items.map((item) => (
- 
-                 
-                  // --- ✅ यहाँ से रेस्पॉन्सिव बदलाव शुरू होते हैं ---
                   <div 
-                    key={item._id} // हर आइटम के लिए यूनिक key
-                    // flex-wrap छोटे स्क्रीन पर आइटम्स को अगली लाइन में भेज देगा
+                    key={item._id}
                     className={`flex flex-wrap sm:flex-nowrap items-center justify-between gap-y-4 gap-x-2 p-4 border rounded-xl hover:shadow-md transition-all ${isDarkMode ? 'border-gray-700 hover:border-gray-600' : 'border-gray-100 hover:border-gray-200'}`}
                   >
-{console.log(item,"cge")}
-               
                     {/* भाग 1: इमेज और प्रोडक्ट की जानकारी */}
                     <div className="flex items-center gap-4 w-full sm:w-auto sm:flex-1">
                       <img
                         src={item.product.images?.[0]?.url || "/placeholder.png"}
                         alt={item.product?.name || "No Image"}
-                        className="w-20 h-20 object-cover rounded-lg flex-shrink-0" // इमेज को सिकुड़ने से रोकता है
+                        className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                       />
                       <div className="flex-1">
                         <h3 className={`text-base font-semibold leading-tight ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{item.product.name}</h3>
@@ -240,24 +257,17 @@ const CartPage = () => {
 
                     {/* भाग 2: कंट्रोलर्स और कुल कीमत */}
                     <div className="flex items-center justify-between w-full sm:w-auto sm:justify-end gap-x-2 sm:gap-x-4">
-                      {/* मात्रा कंट्रोलर */}
                       <div className="flex items-center space-x-2">
                         <Button size="small" icon={<Minus className="w-4 h-4" />} onClick={() => handleUpdateQuantity(item._id, item.quantity - 1)} />
-                        {/* InputNumber को सिर्फ़ दिखाने के लिए इस्तेमाल करें */}
                         <InputNumber readOnly min={1} value={item.quantity} className="w-14 text-center" />
                         <Button size="small" icon={<Plus className="w-4 h-4" />} onClick={() => handleUpdateQuantity(item._id, item.quantity + 1)} />
                       </div>
-
-                      {/* कुल कीमत */}
                       <p className={`text-base font-bold w-24 text-center ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
                         ₹{(item.price * item.quantity).toFixed(2)}
                       </p>
-
-                      {/* हटाने का बटन */}
                       <Button type="text" danger icon={<Trash2 className="w-5 h-5" />} onClick={() => handleRemoveItem(item)} />
                     </div>
                   </div>
-                  // --- ✅ रेस्पॉन्सिव बदलाव यहाँ खत्म होते हैं ---
                 ))}
               </div>
             </div>
@@ -324,8 +334,8 @@ const CartPage = () => {
                 type="primary"
                 size="large"
                 onClick={handleBuyNow}
-                disabled={loading} // `loading` state का नाम बदलें, शायद `checkoutLoading`?
-                loading={loading} // `loading` state का नाम बदलें
+                disabled={loading}
+                loading={loading}
                 icon={<CreditCard className="w-5 h-5 mr-2" />}
                 className={`w-full mb-4 text-white ${isDarkMode ? "bg-amber-600 hover:bg-amber-700 border-amber-600" : "bg-slate-800 hover:bg-slate-900 border-slate-800"}`}
               >

@@ -77,6 +77,34 @@ export const updateCartItem = createAsyncThunk(
   }
 );
 
+export const ClearCart = createAsyncThunk(
+  'cart/ClearCart',
+  async (_, { rejectWithValue }) => {
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.delete(
+        `${API_BASE_URL}/cart/clear`,
+        { quantity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response.data.data, "ttt");
+      return response.data.data;
+    } catch (error) {
+
+      console.log(error,"er")
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to update cart item'
+      );
+    }
+  }
+);
+
 
 const initialState = {
   items: [],

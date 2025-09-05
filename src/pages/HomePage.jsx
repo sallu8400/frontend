@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +15,16 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
+  const [showLoader, setShowLoader] = useState(true);
+
+  // Loader ko 500ms tak dikhane ke liye
+  useEffect(() => {
+    setShowLoader(true);
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [currentPage]);
 
   // ✅ pagination slice से स्टेट चुनें, अब products slice की ज़रूरत नहीं
   const {
@@ -80,7 +88,7 @@ const HomePage = () => {
     setCurrentPage(page);
   };
 
-  if (loading) {
+  if (loading || showLoader) {
     return (
       <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-slate-50'}`}>
         <div className="text-center">
