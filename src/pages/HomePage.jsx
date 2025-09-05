@@ -16,6 +16,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
   const [showLoader, setShowLoader] = useState(true);
+  const featuredRef = React.useRef(null);
 
   // Loader ko 500ms tak dikhane ke liye
   useEffect(() => {
@@ -84,8 +85,13 @@ const HomePage = () => {
   };
 
   const onPageChange = (page) => {
-
     setCurrentPage(page);
+    // Pagination change par scroll karein
+    setTimeout(() => {
+      if (featuredRef.current) {
+        featuredRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   if (loading || showLoader) {
@@ -166,7 +172,7 @@ const HomePage = () => {
 
   {/* Featured Products Section */}
   {/* Products Grid & Pagination Section */}
-      <section className={`py-20 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-slate-50'}`}>
+      <section ref={featuredRef} className={`py-20 transition-colors duration-300 ${isDarkMode ? 'bg-gray-900' : 'bg-slate-50'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className={`text-4xl font-bold mb-4 transition-colors ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Featured Products</h2>
