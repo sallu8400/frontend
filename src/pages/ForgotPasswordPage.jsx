@@ -58,7 +58,7 @@ const resetPassword = async (values) => {
     // Send both the password AND the token in the request body.
     // Remove the separate "headers" object.
     await axios.post(
-      "http://localhost:5000/api/auth/reset-password",
+      "https://backend-2-rngp.onrender.com/api/auth/reset-password",
       { password, token } // <-- Add the token to the body
     );
 

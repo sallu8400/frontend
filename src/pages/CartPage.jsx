@@ -10,8 +10,8 @@ import { useRazorpay } from "react-razorpay";
 import axios from 'axios';
 
 // Your base URL
- const BASE_URL = 'https://backend-2-rngp.onrender.com/api';
-// const BASE_URL = 'http://localhost:5000/api';
+// const BASE_URL = 'https://backend-2-rngp.onrender.com/api';
+const BASE_URL = 'http://localhost:5000/api';
 
 const CartPage = () => {
   const [loading, setLoading] = useState(false);
