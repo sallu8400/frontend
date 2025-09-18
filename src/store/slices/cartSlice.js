@@ -85,7 +85,7 @@ export const ClearCart = createAsyncThunk(
       const token = localStorage.getItem('authToken');
       const response = await axios.delete(
         `${API_BASE_URL}/cart/clear`,
-        { quantity },
+      
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -106,10 +106,45 @@ export const ClearCart = createAsyncThunk(
 );
 
 
+export const GetCart = createAsyncThunk(
+  "cart/GetCart",
+  // Pehla argument payload ke liye hota hai, doosra thunkAPI ke liye
+  async (_, { rejectWithValue }) => { // Yahan underscore (_) ka matlab hai ki hum pehle argument ko ignore kar rahe hain
+    try {
+      const token = localStorage.getItem('authToken');
+
+      // EK AUR CHECK: Token hai ya nahi?
+      if (!token) {
+        console.log("Token nahi mila, isliye request nahi bhej rahe.");
+        return rejectWithValue("Authentication token not found!");
+      }
+
+      const response = await axios.get(
+        `${API_BASE_URL}/cart`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      // Yahan naya wala console log use karein
+      console.error("GetCart thunk mein error aaya:", error);
+      return rejectWithValue(error.response?.data?.message || "Failed to get cart");
+    }
+  }
+);
+
+
+
+
+
 const initialState = {
   items: [],
   total: 0,
   itemCount: 0,
+  itemDiscount: 0,
   loading: false,
   error: null,
 };
@@ -205,6 +240,7 @@ const cartSlice = createSlice({
         state.items = updatedCart.items;
         state.total = updatedCart.totalAmount;
         state.itemCount = updatedCart.totalItems;
+                state.itemDiscount = updatedCart.discount;
         state.loading = false;
         state.error = null;
       })
@@ -212,6 +248,25 @@ const cartSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+// get cart
+      .addCase(GetCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(GetCart.fulfilled, (state, action) => {
+        const cart = action.payload.data;
+        state.items = cart.items;
+        state.total = cart.totalAmount;
+        state.itemCount = cart.totalItems;
+        state.itemDiscount = cart.discount;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(GetCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
 
 
   }

@@ -23,7 +23,7 @@ const ForgotPasswordPage = () => {
     try {
       setLoading(true);
 
-      const response = await axios.post("https://backend-2-rngp.onrender.com/api/auth/forget-password", {
+      const response = await axios.post("http://localhost:5000/api/auth/forget-password", {
         email,
       });
 
@@ -58,7 +58,7 @@ const resetPassword = async (values) => {
     // Send both the password AND the token in the request body.
     // Remove the separate "headers" object.
     await axios.post(
-      "https://backend-2-rngp.onrender.com/api/auth/reset-password",
+      "http://localhost:5000/api/auth/reset-password",
       { password, token } // <-- Add the token to the body
     );
 

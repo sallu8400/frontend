@@ -4,13 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, InputNumber, Empty, message } from 'antd';
 import { ArrowLeft, Plus, Minus, Trash2, ShoppingBag, CreditCard } from 'lucide-react';
-import { ClearCart, clearCart, RemoveFromCart, removeFromCart, updateCartItem } from '../store/slices/cartSlice';
+import { ClearCart, clearCart, GetCart, RemoveFromCart, removeFromCart, updateCartItem } from '../store/slices/cartSlice';
 import { useTheme } from '../contexts/ThemeContext';
 import { useRazorpay } from "react-razorpay";
 import axios from 'axios';
 
 // Your base URL
-const BASE_URL = 'https://backend-2-rngp.onrender.com/api';
+ const BASE_URL = 'https://backend-2-rngp.onrender.com/api';
+// const BASE_URL = 'http://localhost:5000/api';
 
 const CartPage = () => {
   const [loading, setLoading] = useState(false);
@@ -25,9 +26,20 @@ const CartPage = () => {
 
   // Redux store data
   const { user, isLoggedIn } = useSelector((state) => state.auth);
-  const { items, total, itemCount } = useSelector((state) => state.cart);
+  const { items, total, itemCount ,itemDiscount} = useSelector((state) => state.cart);
   const token = user?.token;
+  console.log(itemDiscount,"itemDiscount")
+const [cartLoaded, setCartLoaded] = useState(false);    
+  useEffect(() => {   
+    if (isLoggedIn && !cartLoaded) {    
+      dispatch(GetCart()).then(() => setCartLoaded(true)); // केवल एक बार लोड करें
+    }
 
+
+  }, [isLoggedIn, cartLoaded, dispatch]);  
+  useEffect(() => {
+    setDiscount(itemDiscount || 0);
+  }, [itemDiscount]);
    
 
   // Calculate shipping, tax, and totals
@@ -53,41 +65,59 @@ const CartPage = () => {
     }
   };
 
-  const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
-      message.warning("Please enter a coupon code.");
-      return;
-    }
-    setCouponLoading(true);
-    try {
-      const response = await axios.post(
-        `${BASE_URL}/coupons/apply`,
-        {
-          code: couponCode,
-          cartTotal: total, // Sending the subtotal to the API
+const handleApplyCoupon = async () => {
+
+  if(couponCode.trim() === appliedCoupon) {
+    message.info(`Coupon "${appliedCoupon}" is already applied.`);
+    return;
+  }
+  if (!couponCode.trim()) {
+    message.warning("Please enter a coupon code.");
+    return;
+  }
+  setCouponLoading(true);
+  try {
+    // बदलाव 1: API पेलोड से cartTotal हटा दिया गया है।
+    // अब हम सिर्फ़ कूपन कोड भेज रहे हैं।
+    const response = await axios.post(
+      `${BASE_URL}/coupons/apply`,
+      {
+        code: couponCode,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // We read `response.data.discount` to match your backend controller's response
-      if (response.data && response.data.discount) {
-        setDiscount(response.data.discount);
-        setAppliedCoupon(response.data.coupon); // Store the applied coupon code
-        message.success(`Coupon "${response.data.coupon}" applied successfully!`);
       }
+    );
 
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || "Failed to apply coupon. Please try again.";
-      message.error(errorMessage);
-      console.error("Coupon application error:", error);
-    } finally {
-      setCouponLoading(false);
+    // बदलाव 2: रिस्पॉन्स में पूरे कार्ट ऑब्जेक्ट को हैंडल करें।
+    // अब हम response.data.cart को देखेंगे।
+    if (response.data && response.data.cart) {
+
+      console.log("Updated cart from coupon application:", response.data.cart);
+      
+      // सबसे अच्छा तरीका: पूरे कार्ट स्टेट को अपडेट करें।
+      // यह सुनिश्चित करेगा कि डिस्काउंट, टोटल अमाउंट, आदि सब कुछ UI में सिंक हो जाए।
+      setDiscount(response.data.cart.discount);
+      setAppliedCoupon(true);
+
+      // संदेश दिखाएँ। कूपन का नाम अपडेटेड कार्ट से लें।
+      message.success(`Coupon "${response.data.cart.appliedCoupon}" applied successfully!`);
+    
+    } else {
+      // अगर किसी वजह से कार्ट नहीं मिलता है तो एक सामान्य एरर दिखाएँ।
+      message.error("Could not update the cart. Please refresh and try again.");
     }
-  };
+
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to apply coupon. Please try again.";
+    message.error(errorMessage);
+    console.error("Coupon application error:", error);
+  } finally {
+    setCouponLoading(false);
+  }
+};
 
 
     const handleClearCart = async () => {
@@ -199,6 +229,7 @@ const CartPage = () => {
       </div>
     );
   }
+
 
   // Main view when cart has items
 return (
