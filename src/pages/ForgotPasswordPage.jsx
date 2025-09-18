@@ -4,7 +4,7 @@ import { Form, Input, Button, message } from 'antd';
 import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import axios from 'axios';
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ForgotPasswordPage = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const ForgotPasswordPage = () => {
     try {
       setLoading(true);
 
-      const response = await axios.post("https://backend-2-rngp.onrender.com/api/auth/forget-password", {
+      const response = await axios.post(`${API_BASE_URL}auth/forget-password`, {
         email,
       });
 
